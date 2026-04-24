@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "project_id": "alien-anthropology",
+  "pipeline_type": "cinematic",
+  "stage": "research",
+  "status": "completed",
+  "timestamp": "2026-04-24T00:00:00Z",
+  "checkpoint_policy": "guided",
+  "human_approval_required": false,
+  "human_approved": true,
+  "artifacts": {
+    "research_brief": "projects/alien-anthropology/artifacts/research_brief.json"
+  },
+  "review": {
+    "findings": [
+      {
+        "severity": "info",
+        "note": "10 web searches executed (above 8 minimum). Coverage spans visual references, audio direction, mockumentary technique, anthropological precedent, and stock-asset feasibility."
+      },
+      {
+        "severity": "info",
+        "note": "Three angles identified with genuinely different shapes: 24-hour-cycle narrative (A Day in the Habitat), thematic-focused (The Greeting Behaviors), and academic-research-log (Field Notes from Earth)."
+      },
+      {
+        "severity": "info",
+        "note": "Saturated angles flagged explicitly — Clubbing in the Wild and Jeff Wright TikTok are the dominant prior art. Differentiation strategy is documented."
+      }
+    ],
+    "verdict": "pass"
+  },
+  "cost_snapshot": {
+    "total_spent_usd": 0.0,
+    "total_reserved_usd": 0.0,
+    "budget_remaining_usd": 2.0
+  }
+}

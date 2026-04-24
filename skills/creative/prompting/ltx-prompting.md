@@ -2,6 +2,12 @@
 
 > Source: [LTX Official Prompting Guide](https://docs.ltx.video/api-documentation/prompting-guide)
 > For universal vocabulary, see: `skills/creative/video-gen-prompting.md`
+>
+> **Preferred tool on THEMACHINE:** `ltx_video_wan2gp` (HTTP bridge to Wan2GP at
+> `127.0.0.1:8877`, warm WanGPSession, native synchronized audio, IC-LoRA / STG /
+> VBVR support). `ltx_video_local` and `ltx_video_modal` remain as fallbacks if the
+> bridge is down. Agent skills: `ltx2`, `ltx2-wan2gp`, `wan2gp`. Details in
+> `AGENT_GUIDE.md` → "Wan2GP LTX-2.3 Bridge".
 
 ## LTX-Specific 6-Element Structure
 

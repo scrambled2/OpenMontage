@@ -1,0 +1,32 @@
+{
+  "version": "1.0",
+  "project_id": "alien-anthropology",
+  "pipeline_type": "cinematic",
+  "stage": "publish",
+  "status": "completed",
+  "timestamp": "2026-04-24T13:40:00Z",
+  "checkpoint_policy": "guided",
+  "human_approval_required": true,
+  "human_approved": true,
+  "style_playbook": "minimalist-diagram",
+  "artifacts": {
+    "publish_log": "projects/alien-anthropology/artifacts/publish_log.json",
+    "outputs": [
+      "projects/alien-anthropology/renders/alien_anthropology_v1.mp4",
+      "projects/alien-anthropology/renders/alien_anthropology_web.mp4"
+    ]
+  },
+  "review": {
+    "findings": [
+      {"severity": "info", "note": "Two exports labeled (master + web). Both ffprobe-pass. Web export is moov-at-front for streaming."},
+      {"severity": "info", "note": "Metadata + tags drafted. Thumbnail concept: open-plan office wide with SPECIMEN 0142 lower-third visible."},
+      {"severity": "info", "note": "Total spend $0.10 against $2.00 budget. Pipeline complete pending user final-watch."}
+    ],
+    "verdict": "pass_pending_human"
+  },
+  "cost_snapshot": {
+    "total_spent_usd": 0.10,
+    "total_reserved_usd": 0.10,
+    "budget_remaining_usd": 1.90
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "project_id": "alien-anthropology",
+  "pipeline_type": "cinematic",
+  "stage": "assets",
+  "status": "completed",
+  "timestamp": "2026-04-24T00:00:00Z",
+  "checkpoint_policy": "guided",
+  "human_approval_required": false,
+  "human_approved": true,
+  "style_playbook": "minimalist-diagram",
+  "artifacts": {
+    "asset_manifest": "projects/alien-anthropology/artifacts/asset_manifest.json"
+  },
+  "review": {
+    "findings": [
+      {"severity": "info", "note": "All 12 stock clips downloaded from Pexels with first-query hits. 3 returned at 640x360 originally; re-fetched with broader queries to land all clips at 1280x720 minimum, most at 1920x1080+."},
+      {"severity": "info", "note": "Music came from pixabay_music search (free) on first query. No music_gen fallback needed; saved $0.10."},
+      {"severity": "info", "note": "ElevenLabs narration (voice George) ran in a single pass for $0.10. Actual delivered duration 85.7s vs 60s estimated (Attenborough cadence ~107 WPM real vs 155 WPM estimated)."},
+      {"severity": "warning", "note": "Final video duration is ~87s instead of target 60s. Surfaced to user. Accepted as the right call to preserve voice register (versus rushing delivery or cutting script)."},
+      {"severity": "info", "note": "Subtitles (.srt) generated from script timestamps. Not burned-in for v1; .srt available for re-add if accessibility burn is required."},
+      {"severity": "info", "note": "Total spend $0.10 vs proposal estimate $0.20. Half of estimated budget."}
+    ],
+    "verdict": "pass"
+  },
+  "cost_snapshot": {
+    "total_spent_usd": 0.10,
+    "total_reserved_usd": 0.10,
+    "budget_remaining_usd": 1.90
+  }
+}

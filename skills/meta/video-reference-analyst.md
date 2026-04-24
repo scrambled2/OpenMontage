@@ -227,8 +227,12 @@ Provider        Quality    Speed      Cost (N clips)    Total
 VEO 3.1        Highest    Slow       $X.XX             $X.XX
 Kling Pro      High       Medium     $X.XX             $X.XX
 Sora V2        High       Medium     $X.XX             $X.XX
+LTX 2.3 (Wan2GP) Medium   Fast (local) $0.00 (local GPU) $0.00
 LTX Distilled  Lower      Fastest    $X.XX             $X.XX
 ```
+> **LTX on THEMACHINE:** prefer `ltx_video_wan2gp` (local, free, native audio,
+> ~24s warm / ~105s cold). `ltx_video_local` / `ltx_video_modal` are fallbacks.
+> See `AGENT_GUIDE.md` → "Wan2GP LTX-2.3 Bridge".
 + Image generation: $X.XX (N images × $X.XX each via [provider])
 + TTS narration: $X.XX (N words via [provider])
 + Music: $X.XX ([source])

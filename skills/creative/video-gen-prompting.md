@@ -3,10 +3,15 @@
 ## When to Use
 
 When writing prompts for the video generation family (`video_selector`, `seedance_video`,
-`heygen_video`, `wan_video`, `hunyuan_video`, `ltx_video_local`, `ltx_video_modal`,
-`cogvideo_video`). This skill covers the universal prompt vocabulary that works across all
-video generation models. For the **preferred premium default**, see the Seedance 2.0 row
-in the table below.
+`heygen_video`, `wan_video`, `hunyuan_video`, `ltx_video_wan2gp`, `ltx_video_local`,
+`ltx_video_modal`, `cogvideo_video`). This skill covers the universal prompt vocabulary
+that works across all video generation models. For the **preferred premium default**,
+see the Seedance 2.0 row in the table below.
+
+> **Host note (THEMACHINE):** For LTX-2.3, prefer `ltx_video_wan2gp` (HTTP bridge to
+> Wan2GP, warm session ~24s, native synchronized audio, IC-LoRA / STG / VBVR). Fall back
+> to `ltx_video_local` (direct diffusers) or `ltx_video_modal` (cloud) only if the bridge
+> at `127.0.0.1:8877` is unavailable. See `AGENT_GUIDE.md` → "Wan2GP LTX-2.3 Bridge".
 
 For model-specific tips, see the linked guides below.
 

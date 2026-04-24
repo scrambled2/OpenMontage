@@ -44,6 +44,7 @@ import type { CameraMotion } from "./components/AnimeScene";
 import { TerminalScene } from "./components/TerminalScene";
 import type { TerminalStep } from "./components/TerminalScene";
 import { ProviderChip } from "./components/ProviderChip";
+import { SpecimenLowerThird } from "./components/SpecimenLowerThird";
 import type { ParticleType } from "./components/ParticleOverlay";
 import { resolveTheme, type ThemeConfig, DEFAULT_THEME } from "./Root";
 
@@ -265,7 +266,7 @@ interface Cut {
 }
 
 interface Overlay {
-  type: "section_title" | "stat_reveal" | "hero_title" | "provider_chip";
+  type: "section_title" | "stat_reveal" | "hero_title" | "provider_chip" | "specimen_lower_third";
   in_seconds: number;
   out_seconds: number;
   text?: string;
@@ -276,6 +277,10 @@ interface Overlay {
   providers?: string[];
   cycleSeconds?: number;
   label?: string;
+  // specimen_lower_third
+  specimenId?: string;
+  classification?: string;
+  habitat?: string;
 }
 
 interface AudioLayer {
@@ -744,6 +749,16 @@ const OverlayRenderer: React.FC<{ overlay: Overlay }> = ({ overlay }) => {
         position={(overlay.position as any) || "bottom-right"}
         accentColor={overlay.accentColor}
         label={overlay.label}
+      />
+    );
+  }
+  if (overlay.type === "specimen_lower_third" && overlay.specimenId) {
+    return (
+      <SpecimenLowerThird
+        specimenId={overlay.specimenId}
+        classification={overlay.classification ?? ""}
+        habitat={overlay.habitat ?? ""}
+        accentColor={overlay.accentColor}
       />
     );
   }

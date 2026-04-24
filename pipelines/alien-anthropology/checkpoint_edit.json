@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "project_id": "alien-anthropology",
+  "pipeline_type": "cinematic",
+  "stage": "edit",
+  "status": "completed",
+  "timestamp": "2026-04-24T00:00:00Z",
+  "checkpoint_policy": "guided",
+  "human_approval_required": false,
+  "human_approved": true,
+  "style_playbook": "minimalist-diagram",
+  "artifacts": {
+    "edit_decisions": "projects/alien-anthropology/artifacts/edit_decisions.json"
+  },
+  "review": {
+    "findings": [
+      {"severity": "info", "note": "12 cuts covering 86s. Hard cut between scenes; slow_dissolve only at sc11->sc12 (return-to-distance). Open fade-from-black, close fade-to-black. Disciplined transition vocabulary."},
+      {"severity": "info", "note": "7 overlays: 1 opening supertitle + 5 specimen lower thirds + 1 closing supertitle. Lower thirds use the new SpecimenLowerThird Remotion component (IBM Plex Sans, navy + red accent)."},
+      {"severity": "info", "note": "Audio: narration @ 1.0 over music @ 0.08 with -8dB sidechain duck. fade_in 1.5s, fade_out 2.5s on music."},
+      {"severity": "info", "note": "Subtitles disabled in v1 (would compete with bureaucratic lower thirds); .srt asset still present for re-enable."},
+      {"severity": "info", "note": "render_runtime confirmed 'remotion' (matches proposal); renderer_family corrected from 'documentary-montage' to 'explainer-data' with logged decision (Explainer composition is where SpecimenLowerThird is registered; CinematicRenderer uses a different overlay vocabulary)."}
+    ],
+    "verdict": "pass"
+  },
+  "cost_snapshot": {
+    "total_spent_usd": 0.10,
+    "total_reserved_usd": 0.10,
+    "budget_remaining_usd": 1.90
+  }
+}

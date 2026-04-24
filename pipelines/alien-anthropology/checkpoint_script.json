@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "project_id": "alien-anthropology",
+  "pipeline_type": "cinematic",
+  "stage": "script",
+  "status": "completed",
+  "timestamp": "2026-04-24T00:00:00Z",
+  "checkpoint_policy": "guided",
+  "human_approval_required": true,
+  "human_approved": true,
+  "style_playbook": "minimalist-diagram",
+  "artifacts": {
+    "script": "projects/alien-anthropology/artifacts/script.json"
+  },
+  "review": {
+    "findings": [
+      {
+        "severity": "info",
+        "note": "Beat map: open / 4 specimens (escalation) / 5th specimen (warm pivot reveal) / landing. Escalates cleanly: domestic -> civic -> confined -> private -> intimate."
+      },
+      {
+        "severity": "info",
+        "note": "159 words / 60s = 159 WPM. Brisk for Attenborough cadence (~140 WPM target). Will run at ElevenLabs speed 0.92x to land closer to 145 effective WPM."
+      },
+      {
+        "severity": "info",
+        "note": "Title card discipline: 1 supertitle (open) + 5 lower thirds (one per specimen) + 1 supertitle (close). Identical lower-third format across all 5 specimens — reinforces the bureaucratic-archive conceit."
+      },
+      {
+        "severity": "info",
+        "note": "Reveal moment: 'We continue to watch' (Specimen 0317). Marked in metadata.tonal_anchors. Direction is to NOT signal the warmth — let the audience find it. This is the line that distinguishes C3 from snarkier prior art."
+      }
+    ],
+    "verdict": "pass_pending_human"
+  },
+  "cost_snapshot": {
+    "total_spent_usd": 0.0,
+    "total_reserved_usd": 0.20,
+    "budget_remaining_usd": 1.80
+  }
+}

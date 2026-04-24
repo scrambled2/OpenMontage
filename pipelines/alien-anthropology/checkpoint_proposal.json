@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "project_id": "alien-anthropology",
+  "pipeline_type": "cinematic",
+  "stage": "proposal",
+  "status": "awaiting_human",
+  "timestamp": "2026-04-24T00:00:00Z",
+  "checkpoint_policy": "guided",
+  "human_approval_required": true,
+  "human_approved": false,
+  "artifacts": {
+    "proposal_packet": "projects/alien-anthropology/artifacts/proposal_packet.json",
+    "decision_log": "projects/alien-anthropology/artifacts/decision_log.json"
+  },
+  "review": {
+    "findings": [
+      {
+        "severity": "info",
+        "note": "Three genuinely different concepts (journey / comparison / data_narrative). Diversity check passes on emotional arc, narrative structure, and visual treatment."
+      },
+      {
+        "severity": "info",
+        "note": "Both Remotion and HyperFrames presented to user with brief-specific tradeoffs at initial proposal. render_runtime_selection decision logged with all 3 options considered."
+      },
+      {
+        "severity": "info",
+        "note": "Music plan resolved at proposal: Suno generation in the George Fenton register; ElevenLabs Music + Freesound as fallbacks."
+      },
+      {
+        "severity": "info",
+        "note": "delivery_promise.motion_required=true. Approved fallback is null — silent downgrade to still-led is forbidden per the cinematic skill."
+      },
+      {
+        "severity": "info",
+        "note": "Total estimated cost $0.20 against $2.00 budget cap — within_budget."
+      }
+    ],
+    "verdict": "pass_pending_human"
+  },
+  "cost_snapshot": {
+    "total_spent_usd": 0.0,
+    "total_reserved_usd": 0.20,
+    "budget_remaining_usd": 1.80
+  }
+}

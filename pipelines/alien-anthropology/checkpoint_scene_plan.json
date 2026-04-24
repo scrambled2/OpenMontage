@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "project_id": "alien-anthropology",
+  "pipeline_type": "cinematic",
+  "stage": "scene_plan",
+  "status": "completed",
+  "timestamp": "2026-04-24T00:00:00Z",
+  "checkpoint_policy": "guided",
+  "human_approval_required": true,
+  "human_approved": true,
+  "style_playbook": "minimalist-diagram",
+  "artifacts": {
+    "scene_plan": "projects/alien-anthropology/artifacts/scene_plan.json"
+  },
+  "review": {
+    "findings": [
+      {
+        "severity": "info",
+        "note": "12 scenes, 60s full coverage, 1-2 scenes per script section. Average 5s per scene."
+      },
+      {
+        "severity": "info",
+        "note": "Hero frames identified: opening orbital, the two acknowledgment beats (sc10/sc11 — emotional pivot), closing orbital bookend."
+      },
+      {
+        "severity": "info",
+        "note": "Transition vocabulary disciplined: hard_cut everywhere except sc11->sc12 (slow_dissolve to mark return-to-distance) and the open/close fades."
+      },
+      {
+        "severity": "info",
+        "note": "Lens palette favors 85mm-135mm telephoto for human shots — matches Planet Earth observational grammar."
+      },
+      {
+        "severity": "info",
+        "note": "Support insert rule: NO generated inserts. All 12 clips from stock. Generated content would break the documentary spell — flagged in metadata."
+      }
+    ],
+    "verdict": "pass"
+  },
+  "cost_snapshot": {
+    "total_spent_usd": 0.0,
+    "total_reserved_usd": 0.20,
+    "budget_remaining_usd": 1.80
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "project_id": "alien-anthropology",
+  "pipeline_type": "cinematic",
+  "stage": "compose",
+  "status": "completed",
+  "timestamp": "2026-04-24T00:00:00Z",
+  "checkpoint_policy": "guided",
+  "human_approval_required": false,
+  "human_approved": true,
+  "style_playbook": "minimalist-diagram",
+  "artifacts": {
+    "render_report": "projects/alien-anthropology/artifacts/render_report.json",
+    "outputs": [
+      "projects/alien-anthropology/renders/alien_anthropology_v1.mp4",
+      "projects/alien-anthropology/renders/alien_anthropology_web.mp4"
+    ]
+  },
+  "review": {
+    "findings": [
+      {"severity": "info", "note": "Remotion render: 2610 frames @ 30fps = 87.06s. Composition: Explainer. Concurrency 8x. Bundled and rendered without missing-asset errors."},
+      {"severity": "info", "note": "Master output: 121 MB, 1920x1080 h264 (yuvj420p), AAC 48kHz stereo 317kbps. Web encode: 58 MB, yuv420p, AAC 192kbps, faststart-enabled for web playback."},
+      {"severity": "info", "note": "Two infrastructure obstacles encountered and resolved cleanly: (1) Remotion default port 3000 was EACCES on this host, switched to 47823. (2) OffthreadVideo refused file:// URIs in current Remotion; symlinked assets into remotion-composer/public/ and rewrote paths to staticFile-relative form."},
+      {"severity": "info", "note": "renderer_family changed from documentary-montage -> explainer-data with logged decision. render_runtime stayed remotion. Visual treatment unchanged."},
+      {"severity": "warning", "note": "Final duration 87s vs originally estimated 60s. Per render_report.verification.duration_target_met=false; explanation logged. User accepted during asset stage."},
+      {"severity": "info", "note": "ffprobe pass on both outputs. Audio dynamics applied via Remotion props (music ducking + fades); not separately loudness-normalized via ffmpeg loudnorm."}
+    ],
+    "verdict": "pass"
+  },
+  "cost_snapshot": {
+    "total_spent_usd": 0.10,
+    "total_reserved_usd": 0.10,
+    "budget_remaining_usd": 1.90
+  }
+}

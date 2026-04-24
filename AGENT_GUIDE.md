@@ -206,6 +206,95 @@ projects/<project-name>/
 
 Create the project directory at pipeline initialization, before any stage runs. All tools and agents should write outputs to these paths — never to the repo root or ad-hoc locations.
 
+## Never Rely on Training Data for Model Names, Versions, or Capabilities (HARD RULE)
+
+**Your training data is stale by months to years. For any claim about an AI model name, version number, pricing, API surface, capability, or "which model is current," you MUST verify via one of:**
+
+1. The tool registry (`tools/tool_registry.py` → `support_envelope()`), which reflects what's actually wired up on the current machine right now.
+2. The relevant Layer 3 skill in `~/.claude/skills/` — these are updated more frequently than training data and reflect empirically-verified facts, including exact model IDs, API field names, pricing, and known bugs.
+3. **A live web search.** Every model landscape changes weekly. "Gemini 2.5," "GPT-4 Turbo," "Claude 3," "Stable Diffusion XL" are historical artifacts the moment you cite them. Always `WebSearch` for "<provider> latest model <current year>" before naming a specific version or recommending a provider.
+4. Metadata from a known-good generation on this machine (ffprobe comment tags, tool output logs, etc.) — the output of a process that worked on THEMACHINE is ground truth for what's installed here.
+
+**Explicit failure modes to avoid:**
+
+- Recommending a model by version number from memory ("use Seedance 1.0," "Gemini 2.5 handles video") — instead search and verify the current version.
+- Citing pricing from training — pricing changes constantly. Search or tell the user you don't know the current price.
+- Asserting capabilities that were true when your training was cut but may have been superseded.
+- Telling the user you "know" which model is "state of the art" without verifying.
+
+**If you catch yourself writing a sentence with a specific model version number and you haven't verified it in this session, STOP and search first.** This is non-negotiable.
+
+This rule is mirrored verbatim in the stub instruction files (CLAUDE.md, AGENTS.md, CODEX.md, COPILOT.md, CURSOR.md) because it applies to every agent interface equally.
+
+## Artifact Versioning (HARD RULE — NEVER OVERWRITE)
+
+**Every generated artifact is saved with a version suffix. Overwriting previous versions is forbidden.**
+
+This applies across *every* OpenMontage pipeline, project, and one-off script. Prior versions stay on disk so the user can A/B compare, roll back, and understand what changed between attempts.
+
+### Naming convention
+
+```
+<base_name>_v<N>.<ext>
+```
+
+- `N` starts at `1`, increments by 1 on each regeneration.
+- The "canonical" / "latest" version is whichever has the highest `N`.
+- Scripts that need "the current version" should glob `<base_name>_v*.<ext>` and pick the highest-numbered match.
+- Never delete prior versions mid-project. Archive to an `archive/` subfolder at project completion if storage matters, but don't delete during active iteration.
+
+### Applies to
+
+- Character reference images (`hero_ref_03_circle_speaking_v1.png`, `_v2.png`, ...)
+- Start frames (`sf06_rooftop_silhouettes_v1.png`, `_v2.png`, ...)
+- Generated video clips (`shot06_dialogue_v1.mp4`, `_v2.mp4`, `_v3.mp4`, ...)
+- Generated audio — narration, dialogue, music, especially when prompts or parameters change
+- Final renders (`<project>_master_v1.mp4`, `<project>_web_v1.mp4`, ...)
+- OpenMontage pipeline decision artifacts (`research_brief_v1.json`, `proposal_packet_v2.json`, ...)
+
+### Does NOT apply to
+
+- Working/scratch files inside a `work/` or `tmp/` subdirectory — ephemeral mid-pipeline scratch, can be safely overwritten each run
+- Log files with datetime-stamped filenames (already differentiated)
+- FFmpeg temp props files written and deleted within a single tool call
+
+### Helper
+
+Scripts should never hardcode filenames. Use a next-version helper:
+
+```python
+from pathlib import Path
+
+def next_version_path(base_stem: str, ext: str, directory: Path) -> Path:
+    """shot06_dialogue + .mp4 + dir -> shot06_dialogue_v3.mp4 if v1/v2 exist."""
+    existing = sorted(directory.glob(f"{base_stem}_v*{ext}"))
+    n = 1
+    if existing:
+        nums = [int(p.stem.rsplit("_v", 1)[-1]) for p in existing
+                if p.stem.rsplit("_v", 1)[-1].isdigit()]
+        n = max(nums) + 1 if nums else 1
+    return directory / f"{base_stem}_v{n}{ext}"
+```
+
+### Rationale
+
+Discovered the hard way on the small-giants trailer (2026-04-24): during A2V debugging I overwrote `shot06_dialogue.mp4` four times in a row as the bug was diagnosed. When the user wanted to compare the working vs broken versions, the broken ones were gone. Lost iteration history makes it impossible to understand what changed between attempts. User's standing rule: "you always need to save versions of things. You shouldn't overwrite things. Version one, version two, set naming convention. This is a global thing for all OpenMontage-related activity."
+
+## Generation + Validation — Check What You Make
+
+Any pipeline step that produces an artifact with stated requirements should be followed by an observation step that checks those requirements were actually met. Don't accept stream-presence or a successful exit code as proof — go look at the thing.
+
+For video, the primitive is `.agents/skills/video-understand/scripts/validate_clip.py`. Pass a clip and a list of observable criteria, get structured JSON back: pass/fail per criterion, a one-line verdict, and concrete fix suggestions. Same pattern applies to audio (spectral/level checks), images (visual inspection with Gemini or Nano Banana), and text (LLM judge against a rubric).
+
+Use it whenever a generation step has stated intent:
+- Post-generation acceptance check before promoting a render
+- Gate for an auto-retry loop (with project context deciding whether to reseed, re-prompt, or hand off)
+- Batch audit of an existing folder of outputs
+
+Write criteria as **observable facts**, not judgments. "The camera moves left-to-right" is observable. "The shot feels tense" is not — a cheap model will fabricate. Clip-in-isolation is the weakest scope; shot-in-sequence and sequence-level questions require assembling material first. See `.agents/skills/video-understand/SKILL.md` for usage.
+
+This is standard check → adjust → re-check logic. The reflex: if I can state what the output should demonstrate, I can verify it was demonstrated. Do not skip the verification because the generator reported success.
+
 ## Music Library
 
 Users can place royalty-free music tracks in `music_library/` (gitignored). The asset director will check this folder before falling back to API-based music generation.
@@ -441,7 +530,7 @@ python -c "from tools.tool_registry import registry; import json; registry.disco
 Key capability families to look for in the output:
 
 - **tts** — Text-to-speech providers. Route via `tts_selector`.
-- **video_generation** — Video generation providers (cloud, local GPU, stock). Route via `video_selector`.
+- **video_generation** — Video generation providers (cloud, local GPU, stock). Route via `video_selector`. **On this host (THEMACHINE), prefer `ltx_video_wan2gp` for LTX-2.3** — HTTP bridge to Wan2GP with a warm session and native audio. See "Wan2GP LTX-2.3 Bridge (Host-Specific)" section below and `PROJECT_CONTEXT.md`.
 - **image_generation** — Image generation providers (cloud, local GPU, stock). Route via `image_selector`.
 - **music_generation** — Music and sound effect generation.
 - **video_post** — Composition, stitching, trimming (FFmpeg-based, always local).
@@ -672,3 +761,35 @@ The `.agents/skills/` directory is large. When you're not coming in through a to
 - Do not present a single unavailable tool in isolation. Always show the full capability picture: "X of Y providers configured for this capability."
 - Do not skip the Provider Menu at preflight. The user must see what they have AND what they could unlock.
 - Do not change provider, model, or render path without telling the user first and getting approval when the change is material.
+
+---
+
+## Wan2GP LTX-2.3 Bridge (Host-Specific: THEMACHINE)
+
+A local integration that makes Wan2GP's LTX-2.3 available to OpenMontage without forcing Wan2GP's dep tree into this venv.
+
+**Tool**: `ltx_video_wan2gp` (in `tools/video/ltx_video_wan2gp.py`)
+**Capability**: `video_generation`
+**Provider**: `wan2gp-bridge`
+**Backend**: FastAPI HTTP bridge at `http://127.0.0.1:8877` running inside the `wan2gp_cu13` conda env. Wraps Wan2GP's in-process `shared.api` and holds one `WanGPSession` warm across calls.
+**Agent skills**: `ltx2`, `ltx2-wan2gp`, `wan2gp` — read these (Layer 3) before calling the tool.
+
+### When to use it
+- Any LTX-2.3 generation request (T2V, I2V, V+A, IC-LoRA). This is the preferred LTX path on this host.
+- Native synchronized audio in a single pass (LTX-2.3's strength).
+- Warm generation across a pipeline's asset stage (first call ~105s, subsequent ~24s for 768x512 49f).
+
+### Preference order within the LTX family
+1. `ltx_video_wan2gp` — preferred. Via bridge, warm session, native audio.
+2. `ltx_video_local` — fallback. Direct diffusers; available but duplicates weights and misses Wan2GP's IC-LoRA / STG / VBVR features.
+3. `ltx_video_modal` — cloud fallback when no local GPU is available.
+
+### Operational rules
+- **Do not import `shared.api` directly from OpenMontage.** It pulls torch 2.10 + `mmgp` + Wan2GP internals into this venv and breaks our stack (torch 2.11+cu128 + rembg/gfpgan/realesrgan).
+- **Check the bridge is up** before scheduling an LTX task. The tool's `get_status()` pings `/health` and reports UNAVAILABLE if the bridge isn't running. If unavailable, tell the user and point them at `services/apps/wan2gp/scripts/start_bridge.cmd` in the machine-manager repo.
+- **Model variant: `ltx2_22B_distilled_1_1` is what's installed on this machine (WanGP v11.35).** The 1.0 string may silently reload or fall back depending on install state — verify via `ffprobe <known-good output>.mp4 | jq .format.tags.comment` which shows the actual `model_type` Wan2GP used. Community notes about 1.1 having weaker audio/lipsync than 1.0 exist, but on THEMACHINE only 1.1 is loaded, so pass `model_variant="ltx2_22B_distilled_1_1"` explicitly rather than relying on the tool's default.
+- **`image_prompt_type` is a required field for I2V, not optional.** The OpenMontage `ltx_video_wan2gp` tool auto-derives this from `image_start`/`image_end` presence (patched 2026-04-24 after a drift-to-T2V failure on the small-giants trailer). If you're calling the bridge directly instead of through the tool, set `image_prompt_type: "S"` (start frame), `"E"` (end frame), or `"SE"` (both) explicitly — without it Wan2GP silently falls back to T2V and ignores your image.
+- **One job at a time.** The bridge serializes submissions (Wan2GP's own constraint). Don't parallelize LTX calls in the same pipeline stage.
+
+### Full reference
+See `PROJECT_CONTEXT.md` (Local-Host Integrations section) and the machine-manager repo's `services/apps/wan2gp/AGENTS.md` for the bridge's architecture, endpoints, benchmarks, and extension pattern for future consumers.

@@ -47,7 +47,7 @@ Each tool's `agent_skills[]` field bridges Layer 1 → Layer 3. See `skills/INDE
 - **Pipeline manifests:** Declarative YAML defining stages, skills, tools, review focus, approval gates
 - **Capability-first tool design:** Each major family should expose a selector tool plus explicit provider tools
   - Example: `tts_selector` + `elevenlabs_tts` / `google_tts` / `openai_tts` / `piper_tts`
-  - Example: `video_selector` + `heygen_video` / `wan_video` / `hunyuan_video` / `ltx_video_local` / `ltx_video_modal` / `cogvideo_video`
+  - Example: `video_selector` + `heygen_video` / `wan_video` / `hunyuan_video` / `ltx_video_wan2gp` / `ltx_video_local` / `ltx_video_modal` / `cogvideo_video`
 - **Style playbooks:** YAML defining visual language, typography, motion, audio, asset generation constraints
 - **Artifacts are canonical:** `brief`, `script`, `scene_plan`, `asset_manifest`, `edit_decisions`, `render_report`, `publish_log`
 - **Every tool inherits from `tools/base_tool.py`** (ToolContract)
@@ -78,6 +78,24 @@ Each tool's `agent_skills[]` field bridges Layer 1 → Layer 3. See `skills/INDE
 | `skills/core/hyperframes.md` | Layer 2 — when OpenMontage should pick HyperFrames vs Remotion, artifact → workspace mapping |
 | `schemas/styles/playbook.schema.json` | Playbook schema v2 with design tokens (chart_palette, scale_system, weight_matrix, color_rules) |
 | `tests/qa/` | Quality validation test scripts for tool-by-tool output inspection |
+
+## Local-Host Integrations (THEMACHINE)
+
+This install runs on Chris's THEMACHINE and has one host-specific integration worth knowing about:
+
+### Wan2GP Bridge for LTX-2.3 (preferred local-video path)
+
+- **Tool**: `tools/video/ltx_video_wan2gp.py` (capability=`video_generation`, provider=`wan2gp-bridge`)
+- **Backend**: FastAPI HTTP bridge at `http://127.0.0.1:8877` wrapping Wan2GP's `shared.api` inside the `wan2gp_cu13` conda env
+- **Model**: LTX-2.3 22B Distilled 1.0 (current community-preferred variant; 1.1 has weaker audio/lipsync per Wan2GP Discord)
+- **Warm session**: bridge holds one `WanGPSession` across calls → cold ~105s, warm ~24s for 768x512 49f
+- **Native audio**: yes — LTX-2.3 generates synchronized video+audio in one pass
+- **Preference order for LTX**: `ltx_video_wan2gp` > `ltx_video_local` (diffusers fallback) > `ltx_video_modal` (cloud fallback)
+- **Bridge source**: `V:\Repositories\CORE_REPOS\machine-manager\services\apps\wan2gp\scripts\api_bridge.py`
+- **Bridge launcher**: `V:\Repositories\CORE_REPOS\machine-manager\services\apps\wan2gp\scripts\start_bridge.cmd`
+- **Service registry**: `wan2gp-bridge` in `.claude/services/active.json`
+
+Agents: when choosing an LTX provider through `video_selector`, prefer `ltx_video_wan2gp` if its status is `available`. Fall back to `ltx_video_local` / `ltx_video_modal` only if the bridge is down. Do NOT import Wan2GP's `shared.api` directly from OpenMontage — it would pull incompatible torch and internal deps into this venv.
 
 ## Available Pipelines
 
